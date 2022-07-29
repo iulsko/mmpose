@@ -84,7 +84,7 @@ def main():
 
     args = parser.parse_args()
 
-    assert args.show or (args.out_video_root != '')
+    # assert args.show or (args.out_video_root != '')
     assert args.det_config is not None
     assert args.det_checkpoint is not None
 
@@ -166,16 +166,17 @@ def main():
             outputs=output_layer_names)
 
         # show the results
-        vis_frame = vis_pose_result(
-            pose_model,
-            cur_frame,
-            pose_results,
-            dataset=dataset,
-            dataset_info=dataset_info,
-            kpt_score_thr=args.kpt_thr,
-            radius=args.radius,
-            thickness=args.thickness,
-            show=False)
+        if args.show or save_out_video:
+            vis_frame = vis_pose_result(
+                pose_model,
+                cur_frame,
+                pose_results,
+                dataset=dataset,
+                dataset_info=dataset_info,
+                kpt_score_thr=args.kpt_thr,
+                radius=args.radius,
+                thickness=args.thickness,
+                show=False)
 
         if args.show:
             cv2.imshow('Frame', vis_frame)
