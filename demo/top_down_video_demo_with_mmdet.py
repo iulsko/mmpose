@@ -1,4 +1,5 @@
 # Copyright (c) OpenMMLab. All rights reserved.
+import copy
 import os
 import warnings
 from argparse import ArgumentParser
@@ -9,6 +10,7 @@ import mmcv
 from mmpose.apis import (collect_multi_frames, inference_top_down_pose_model,
                          init_pose_model, process_mmdet_results,
                          vis_pose_result)
+from mmpose.apis.logging import log_2d_results
 from mmpose.datasets import DatasetInfo
 
 try:
@@ -138,6 +140,7 @@ def main():
     output_layer_names = None
 
     print('Running inference...')
+    pose_results_list = []
     for frame_id, cur_frame in enumerate(mmcv.track_iter_progress(video)):
         # get the detection results of current frame
         # the resulting box is (x1, y1, x2, y2)
@@ -183,11 +186,20 @@ def main():
         if args.show and cv2.waitKey(1) & 0xFF == ord('q'):
             break
 
+        pose_results_list.append(copy.deepcopy(pose_results))
+
     if save_out_video:
         videoWriter.release()
     if args.show:
         cv2.destroyAllWindows()
 
+    df_2d_keypoints = log_2d_results(pose_results_list, dataset_info.keypoint_info)
+
+    logging_dir = os.path.join(os.path.dirname(args.video_path), "2Dlogs")
+    if not os.path.isdir(logging_dir):
+        os.mkdir(logging_dir)
+    
+    df_2d_keypoints.to_csv(os.path.join(logging_dir, f"{os.path.splitext(os.path.basename(args.video_path))[0]}.csv"))
 
 if __name__ == '__main__':
     main()
