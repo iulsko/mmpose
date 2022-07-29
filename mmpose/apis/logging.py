@@ -35,7 +35,7 @@ def log_2d_results(pose_results, dataset_keypoints):
                          for i in range(n_people) for rep in range(len(dataset_keypoints))]
             dic_2d_keypoints["bbox_area"] += bbox_area
             # keypoint name
-            names = [dataset_keypoints[rep]["name"] for rep in range(len(dataset_keypoints)) for i in range(n_people)]
+            names = [dataset_keypoints[rep]["name"] for rep in range(len(dataset_keypoints))] * n_people
             dic_2d_keypoints["keypoint_name"] += names
             # # track id
             # trackids = [pose_result[i]["track_id"] for i in range(n_people) for rep in range(len(dataset_keypoints))]
@@ -53,8 +53,8 @@ def log_2d_results(pose_results, dataset_keypoints):
             dic_2d_keypoints["ycoor"] += nans
             dic_2d_keypoints["kpt_threshold"] += nans
             dic_2d_keypoints["bbox"] += nans
-            dic_2d_keypoints["bbox_threshold"] += nans
-            dic_2d_keypoints["bbox_area"] += nans
+            dic_2d_keypoints["bbox_threshold"] += [-1 for rep in range(len(dataset_keypoints))]
+            dic_2d_keypoints["bbox_area"] += [-1 for rep in range(len(dataset_keypoints))]
             names = [dataset_keypoints[rep]["name"] for rep in range(len(dataset_keypoints))]
             dic_2d_keypoints["keypoint_name"] += names
             dic_2d_keypoints["track_id"] += nans
