@@ -132,6 +132,10 @@ def main():
         assert 'frame_indices_test' in pose_model.cfg.data.test.data_cfg
         indices = pose_model.cfg.data.test.data_cfg['frame_indices_test']
 
+    logging_dir = os.path.join(os.path.dirname(args.video_path), "2Dlogs")
+    if not os.path.isdir(logging_dir):
+        os.mkdir(logging_dir)
+
     # whether to return heatmap, optional
     return_heatmap = False
 
@@ -195,11 +199,6 @@ def main():
         cv2.destroyAllWindows()
 
     df_2d_keypoints = log_2d_results(pose_results_list, dataset_info.keypoint_info)
-
-    logging_dir = os.path.join(os.path.dirname(args.video_path), "2Dlogs")
-    if not os.path.isdir(logging_dir):
-        os.mkdir(logging_dir)
-    
     df_2d_keypoints.to_csv(os.path.join(logging_dir, f"{os.path.splitext(os.path.basename(args.video_path))[0]}.csv"))
 
 if __name__ == '__main__':
