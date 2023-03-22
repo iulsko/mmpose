@@ -100,7 +100,7 @@ def main():
                                       min_cutoff=0.1, beta=0.00001, d_cutoff=1.0)
             pose_result_filtered[i] = pose_result[i]
         elif i in set_missing:
-            pose_result_filtered[i] = np.zeros((n_keypoints, 2))
+            pose_result_filtered[i] = np.ones((n_keypoints, 2)) * np.nan
         else:
             pose_result_filtered[i] = one_euro_filter(pose_result[i])
 
@@ -136,11 +136,11 @@ def main():
             else:
                 pose_result_filtered_threshold[j, idx] = one_euro_filter(all_thresholds[j, idx])
 
-    for idx in (range(len(pose_result_filtered))):
+    for idx in range(len(pose_result_filtered)):
         df_2d_keypoints.loc[n_keypoints * idx:n_keypoints * (idx + 1)-1, "xcoor_1euro"] = pose_result_filtered[idx][:,0]
         df_2d_keypoints.loc[n_keypoints * idx:n_keypoints * (idx + 1)-1, "ycoor_1euro"] = pose_result_filtered[idx][:,1]
         df_2d_keypoints.loc[n_keypoints * idx:n_keypoints * (idx + 1)-1, "kpt_threshold_1euro"] = pose_result_filtered_threshold[idx]
-    df_2d_keypoints.to_csv(f"{path.parent}/1euro_{path.stem}.csv")
+    df_2d_keypoints.to_csv(f"{path.parent}/1euro/{path.name}")
 
 
 if __name__ == '__main__':
